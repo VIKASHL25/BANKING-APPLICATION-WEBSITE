@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -7,38 +6,24 @@ import { AlertCircle, CheckCircle, XCircle, UserCheck, IndianRupee } from "lucid
 import { formatCurrency } from "@/utils/formatting";
 import { API_URL } from "@/utils/constants";
 
-interface PendingLoan {
-  id: number;
-  userName: string;
-  userId: number;
-  loanType: string;
-  principalAmount: number;
-  interestRate: number;
-  dueDate: string;
-  createdAt: string;
-}
-
 const StaffDashboard = () => {
   const { staff, token, logout, isLoggedIn, isStaff } = useAuth();
   const navigate = useNavigate();
-  
-  const [pendingLoans, setPendingLoans] = useState<PendingLoan[]>([]);
+
+  const [pendingLoans, setPendingLoans] = useState([]);
   const [loading, setLoading] = useState(false);
-  
-  // Check if staff is logged in
+
   useEffect(() => {
     if (!isLoggedIn || !isStaff) {
       navigate("/");
       return;
     }
-    
     fetchPendingLoans();
+    // eslint-disable-next-line
   }, [isLoggedIn, isStaff, navigate, token]);
-  
-  // Fetch pending loans
+
   const fetchPendingLoans = async () => {
     if (!token) return;
-    
     try {
       setLoading(true);
       const response = await fetch(`${API_URL}/staff/loans/pending`, {
@@ -46,11 +31,9 @@ const StaffDashboard = () => {
           'Authorization': `Bearer ${token}`
         }
       });
-      
       if (!response.ok) {
         throw new Error('Failed to fetch pending loans');
       }
-      
       const data = await response.json();
       setPendingLoans(data.pendingLoans);
     } catch (error) {
@@ -60,9 +43,8 @@ const StaffDashboard = () => {
       setLoading(false);
     }
   };
-  
-  // Process loan (approve or reject)
-  const processLoan = async (loanId: number, action: 'approve' | 'reject') => {
+
+  const processLoan = async (loanId, action) => {
     try {
       setLoading(true);
       const response = await fetch(`${API_URL}/staff/loans/${loanId}/process`, {
@@ -73,36 +55,30 @@ const StaffDashboard = () => {
         },
         body: JSON.stringify({ action })
       });
-      
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || `Failed to ${action} loan`);
       }
-      
       const data = await response.json();
       setPendingLoans(data.pendingLoans);
-      
-      toast.success(action === 'approve' 
-        ? "Loan approved successfully" 
+      toast.success(action === 'approve'
+        ? "Loan approved successfully"
         : "Loan rejected successfully"
       );
-      
-    } 
+    }
     catch (error) {
       console.error(`Error ${action}ing loan:`, error);
-      toast.error((error as Error).message || `Failed to ${action} loan`);
+      toast.error(error.message || `Failed to ${action} loan`);
     } finally {
       setLoading(false);
-      
     }
   };
 
-  //  logout
   const handleLogout = () => {
     logout();
     navigate("/");
   };
-  
+
   return (
     <div className="staff-dashboard">
       {/* Header */}
@@ -118,7 +94,7 @@ const StaffDashboard = () => {
                 <p className="user-name">{staff?.name}</p>
                 <p className="user-role">{staff?.role}</p>
               </div>
-              <button 
+              <button
                 className="logout-btn"
                 onClick={handleLogout}
               >
@@ -128,7 +104,7 @@ const StaffDashboard = () => {
           </div>
         </div>
       </header>
-      
+
       {/* Main Content */}
       <main>
         <div className="main-header">
@@ -136,9 +112,8 @@ const StaffDashboard = () => {
             <h2>Loan Applications</h2>
             <p>Review and process customer loan applications</p>
           </div>
-        
         </div>
-        
+
         {loading ? (
           <div className="loading-container">
             <div className="loading-indicator"></div>
@@ -193,13 +168,12 @@ const StaffDashboard = () => {
                           <p className="detail-value">{new Date(loan.createdAt).toLocaleDateString()}</p>
                         </div>
                       </div>
-                      
+
                       <div className="loan-actions">
                         <button
                           className="reject-btn"
                           onClick={() => processLoan(loan.id, 'reject')}
                           disabled={loading}
-                          
                         >
                           <XCircle size={16} />
                           Reject
@@ -221,7 +195,7 @@ const StaffDashboard = () => {
           </>
         )}
       </main>
-      
+
       {/* Footer */}
       <footer>
         <p>&copy; {new Date().getFullYear()} SV Bank Staff Portal. All rights reserved.</p>

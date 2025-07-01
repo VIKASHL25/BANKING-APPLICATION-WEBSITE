@@ -1,64 +1,41 @@
-
 import { useState } from 'react';
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { IndianRupee } from "lucide-react";
 import { formatCurrency } from "@/utils/formatting";
-import { API_URL, USE_MOCK_DATA, MOCK_USER, MOCK_STAFF } from "@/utils/constants";
+import { API_URL } from "@/utils/constants";
 
 const Index = () => {
   const { login, staffLogin, isLoggedIn } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("login");
   const [isStaffLogin, setIsStaffLogin] = useState(false);
-  
+
   // Form states
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
   const [staffLoginForm, setStaffLoginForm] = useState({ email: "", password: "" });
-  const [registerForm, setRegisterForm] = useState({ 
-    username: "", 
-    password: "", 
+  const [registerForm, setRegisterForm] = useState({
+    username: "",
+    password: "",
     confirmPassword: "",
     name: ""
   });
   const [loading, setLoading] = useState(false);
-  
+
   // Redirect if already logged in
   if (isLoggedIn) {
     navigate("/dashboard");
     return null;
   }
-  
+
   // Handle login
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     try {
       setLoading(true);
-      
-      if (USE_MOCK_DATA) {
-        if (isStaffLogin) {
-     
-          setTimeout(() => {
-            const mockToken = "mock-staff-jwt-token";
-            staffLogin(mockToken, MOCK_STAFF);
-            navigate("/staff");
-            toast.success("Staff login successful (Demo Mode)!");
-          }, 800);
-        } else {
-        
-          setTimeout(() => {
-            const mockToken = "mock-user-jwt-token";
-            login(mockToken, MOCK_USER);
-            navigate("/dashboard");
-            toast.success("Login successful (Demo Mode)!");
-          }, 800);
-        }
-        return;
-      }
-      
-      // Actual API calls if not using mock data
+
       if (isStaffLogin) {
         const response = await fetch(`${API_URL}/staff/login`, {
           method: 'POST',
@@ -70,12 +47,12 @@ const Index = () => {
             password: staffLoginForm.password
           })
         });
-        
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || 'Login failed');
         }
-        
+
         const data = await response.json();
         staffLogin(data.token, data.staff);
         navigate("/staff");
@@ -91,12 +68,12 @@ const Index = () => {
             password: loginForm.password
           })
         });
-        
+
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || 'Login failed');
         }
-        
+
         const data = await response.json();
         login(data.token, data.user);
         navigate("/dashboard");
@@ -104,41 +81,24 @@ const Index = () => {
       }
     } catch (error) {
       console.error("Login error:", error);
-      toast.error((error as Error).message || "Invalid login credentials");
+      toast.error(error.message || "Invalid login credentials");
     } finally {
       setLoading(false);
     }
   };
-  
+
   // Handle registration
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    
+
     if (registerForm.password !== registerForm.confirmPassword) {
       toast.error("Passwords don't match");
       return;
     }
-    
+
     try {
       setLoading(true);
-      
-      // Check if we should use mock data
-      if (USE_MOCK_DATA) {
-        // Simulate registration with mock data
-        setTimeout(() => {
-          toast.success("Registration successful! Please login. (Demo Mode)");
-          setActiveTab("login");
-          setRegisterForm({
-            username: "",
-            password: "",
-            confirmPassword: "",
-            name: ""
-          });
-        }, 800);
-        return;
-      }
-      
-      // Actual API call if not using mock data
+
       const response = await fetch(`${API_URL}/register`, {
         method: 'POST',
         headers: {
@@ -150,12 +110,12 @@ const Index = () => {
           name: registerForm.name
         })
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Registration failed');
       }
-      
+
       toast.success("Registration successful! Please login.");
       setActiveTab("login");
       setRegisterForm({
@@ -166,12 +126,12 @@ const Index = () => {
       });
     } catch (error) {
       console.error("Registration error:", error);
-      toast.error((error as Error).message || "Registration failed");
+      toast.error(error.message || "Registration failed");
     } finally {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="homepage">
       {/* Modern Banking Header */}
