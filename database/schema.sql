@@ -1,4 +1,5 @@
-
+CREATE DATABASE svbank;
+USE svbank;
 -- Users table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -76,6 +77,7 @@ VALUES
     ('admin@svbank.com', 'admin123', 'Admin User', 'Administrator'),
     ('manager@svbank.com', 'manager123', 'Manager User', 'Branch Manager'),
     ('loan@svbank.com', 'loan123', 'Loan Officer', 'Loan Officer');
+
 
 
 
