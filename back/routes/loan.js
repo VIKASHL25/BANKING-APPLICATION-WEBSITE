@@ -1,4 +1,3 @@
-// filepath: backend/routes/loan.js
 import express from 'express';
 import {
   getLoanTypes,

@@ -25,7 +25,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Form states
   const [depositAmount, setDepositAmount] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
@@ -50,7 +49,6 @@ const Dashboard = () => {
     fetchAccountDetails();
     fetchTransactions();
     fetchLoanTypes();
-    // eslint-disable-next-line
   }, [isLoggedIn, isStaff, navigate, token]);
 
   const handleApiError = (error, fallbackMessage) => {
@@ -414,7 +412,7 @@ const Dashboard = () => {
       {/* Main Content */}
       <main>
         <div className="dashboard-container">
-          {/* Account Overview Card */}
+          {/* Account Overview  */}
           <div className="balance-card">
             <div className="balance-header">
               <h2>Account Balance</h2>

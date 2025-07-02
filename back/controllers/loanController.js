@@ -1,4 +1,3 @@
-// filepath: backend/controllers/loanController.js
 import pool from '../config/db.js';
 
 export const getLoanTypes = async (req, res) => {

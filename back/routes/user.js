@@ -1,4 +1,3 @@
-// filepath: backend/routes/user.js
 import express from 'express';
 import {
   getCurrentUser,

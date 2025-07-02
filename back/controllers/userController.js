@@ -1,4 +1,3 @@
-// filepath: backend/controllers/userController.js
 import pool from '../config/db.js';
 
 export const getCurrentUser = async (req, res) => {

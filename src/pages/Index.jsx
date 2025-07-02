@@ -12,7 +12,6 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("login");
   const [isStaffLogin, setIsStaffLogin] = useState(false);
 
-  // Form states
   const [loginForm, setLoginForm] = useState({ username: "", password: "" });
   const [staffLoginForm, setStaffLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({
@@ -23,7 +22,7 @@ const Index = () => {
   });
   const [loading, setLoading] = useState(false);
 
-  // Redirect if already logged in
+  //  if already logged in
   if (isLoggedIn) {
     navigate("/dashboard");
     return null;
